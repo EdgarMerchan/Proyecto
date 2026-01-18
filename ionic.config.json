@@ -1,0 +1,7 @@
+{
+  "name": "ProSong",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
