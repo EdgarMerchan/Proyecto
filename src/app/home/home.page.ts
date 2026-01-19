@@ -85,9 +85,5 @@ export class HomePage implements OnInit {
     this.router.navigate(['/intro']);
   }
 
-  async volverAlHome() {
-    //Esta funcion me llama desde otras páginas al volver
-    await this.storageService.set('introVista', true);
-    this.router.navigate(['/home']);
-  }
+
 }
