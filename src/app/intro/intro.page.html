@@ -2,14 +2,31 @@
 <!-- src/app/intro/intro.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Introducción</ion-title>
+    <ion-title>Intro</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="intro-container">
-    <ion-button (click)="volverAlHome()" expand="block">
-      Volver al Home
-    </ion-button>
+  <div class="intro-wrapper">
+    <swiper-container
+      [pagination]="true"
+      [slidesPerView]="1"
+    >
+      <swiper-slide *ngFor="let slide of slides">
+        <div class="slide-content">
+          <h2 class="ion-text-center">{{ slide.title }}</h2>
+          <div class="image-container">
+            <img [src]="slide.image" [alt]="slide.title">
+          </div>
+          <p class="ion-text-center">{{ slide.description }}</p>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+
+    <div class="button-container">
+      <ion-button (click)="volverAlHome()" expand="block" color="primary">
+        Comenzar
+      </ion-button>
+    </div>
   </div>
 </ion-content>
