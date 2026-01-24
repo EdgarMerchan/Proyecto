@@ -1,0 +1,73 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="login-container">
+    <!-- Avatar / Imagen de perfil -->
+    <figure class="profile-image">
+      <img src="assets/images/icon user.png" alt="Usuario">
+    </figure>
+
+    <h2>Ingresa tus datos</h2>
+
+    <!-- Formulario de Login -->
+    <form [formGroup]="loginForm">
+      
+      <!-- Campo Email -->
+      <ion-item lines="none">
+        <ion-input 
+          label="Email" 
+          labelPlacement="stacked" 
+          placeholder="Escribe tu email" 
+          formControlName="email"
+          type="email"
+        ></ion-input>
+      </ion-item>
+      
+      <!-- Mensajes de error para Email -->
+      <div class="error-messages" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.dirty">
+        <ng-container>
+          <div>El email es obligatorio.</div>
+        </ng-container>
+      </div>
+      
+      <div class="error-messages" *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.dirty">
+        <ng-container>
+          <div>Email inválido.</div>
+        </ng-container>
+      </div>
+
+      <!-- Campo Contraseña -->
+      <ion-item lines="none">
+        <ion-input 
+          label="Contraseña" 
+          labelPlacement="stacked" 
+          placeholder="Escribe tu contraseña" 
+          formControlName="password"
+          type="password"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Mensajes de error para Password -->
+      <div class="error-messages" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.dirty">
+        <ng-container>
+          <div>La contraseña es obligatoria.</div>
+        </ng-container>
+      </div>
+
+      <!-- Botón de Login -->
+      <ion-button 
+        expand="block" 
+        (click)="login()" 
+        [disabled]="!loginForm.valid"
+        class="login-button"
+      >
+        Login
+      </ion-button>
+
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,85 @@
+// login.page.scss
+
+ion-content {
+  --background: #000000; // Fondo negro como en el video
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.profile-image {
+  margin: 0 0 20px 0;
+  
+  img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 3px solid #ffffff;
+  }
+}
+
+h2 {
+  color: #ffffff;
+  font-size: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+form {
+  width: 100%;
+  max-width: 400px;
+}
+
+ion-item {
+  --background: transparent;
+  --border-color: #333333;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 10px;
+  
+  ion-input {
+    --color: #ffffff;
+    --placeholder-color: #999999;
+    --padding-start: 10px;
+    --padding-end: 10px;
+  }
+  
+  ion-label {
+    color: #ffffff !important;
+  }
+}
+
+.error-messages {
+  color: #ff4444;
+  font-size: 13px;
+  margin: -5px 0 15px 10px;
+  
+  div {
+    margin: 3px 0;
+  }
+}
+
+.login-button {
+  --background: #4ade80; // Verde como en el video
+  --background-hover: #22c55e;
+  --border-radius: 25px;
+  --box-shadow: 0 4px 10px rgba(74, 222, 128, 0.3);
+  margin-top: 20px;
+  height: 50px;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: none;
+  
+  &:disabled {
+    --background: #333333;
+    --color: #666666;
+    opacity: 0.5;
+  }
+}
