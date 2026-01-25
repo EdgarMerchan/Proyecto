@@ -1,33 +1,21 @@
-// login.page.scss
+// register.page.scss
 
 ion-content {
-  --background: #000000; // Fondo negro como en el video
+  --background: #000000;
 }
 
-.login-container {
+.register-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  min-height: 100%;
   padding: 20px;
-}
-
-.profile-image {
-  margin: 0 0 20px 0;
-  
-  img {
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border: 3px solid #ffffff;
-  }
 }
 
 h2 {
   color: #ffffff;
-  font-size: 20px;
+  font-size: 24px;
   margin-bottom: 30px;
   text-align: center;
 }
@@ -66,8 +54,8 @@ ion-item {
   }
 }
 
-.login-button {
-  --background: #4ade80; // Verde como en el video
+.register-button {
+  --background: #4ade80;
   --background-hover: #22c55e;
   --border-radius: 25px;
   --box-shadow: 0 4px 10px rgba(74, 222, 128, 0.3);
@@ -84,7 +72,7 @@ ion-item {
   }
 }
 
-.register-link {
+.login-link {
   text-align: center;
   margin-top: 20px;
   

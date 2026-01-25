@@ -9,6 +9,10 @@ export const routes: Routes = [
     loadComponent: () => import('./login/login.page').then(m => m.LoginPage)
   },
   {
+    path: 'register',
+    loadComponent: () => import('./register/register.page').then( m => m.RegisterPage)
+  },
+  {
     path: 'intro',
     loadComponent: () => import('./intro/intro.page').then(m => m.IntroPage),
     canActivate: [authGuard] // Necesito estar logueado
@@ -22,5 +26,6 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
-  }
+  },
+  
 ];

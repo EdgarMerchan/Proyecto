@@ -9,25 +9,29 @@ export class AuthService {
   constructor(private storageService: StorageService) {}
 
   // Método para validar credenciales y hacer el login
-  async loginUser(credentials: any): Promise<boolean> {
-    return new Promise((accept, reject) => {
-      // Valido credenciales 
-      if (
-        credentials.email === "camilo@gmail.com" &&
-        credentials.password === "123456789"
-      ) {
+async loginUser(credentials: any): Promise<boolean> {
+  return new Promise(async (accept, reject) => {
+    try {
+      // Buscar el usuario en el storage por email
+      const user = await this.storageService.get(credentials.email);
+      
+      if (user && user.password === credentials.password) {
         // Login correcto - guardar en storage
-        this.storageService.set('login', true).then(() => {
-          accept(true);
-          console.log(' Login correcto - guardado en storage');
-        });
+        await this.storageService.set('login', true);
+        await this.storageService.set('currentUser', user);
+        accept(true);
+        console.log(' Login correcto - guardado en storage');
       } else {
         // Login incorrecto
         reject(false);
-        console.log(' Login incorrecto');
+        console.log(' Credenciales incorrectas');
       }
-    });
-  }
+    } catch (error) {
+      reject(false);
+      console.log(' Error en el login:', error);
+    }
+  });
+}
 
   // Método para verificar si el usuario está logueado
   async isLoggedIn(): Promise<boolean> {

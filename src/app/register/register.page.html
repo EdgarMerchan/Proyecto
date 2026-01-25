@@ -1,0 +1,109 @@
+<!-- register.page.html -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="register-container">
+    
+    <h2>Crea tu cuenta</h2>
+
+    <!-- Formulario de Registro -->
+    <form [formGroup]="registerForm">
+      
+      <!-- Campo Nombre -->
+      <ion-item lines="none">
+        <ion-input 
+          label="Nombre" 
+          labelPlacement="stacked" 
+          placeholder="Escribe tu nombre" 
+          formControlName="nombre"
+          type="text"
+        ></ion-input>
+      </ion-item>
+      
+      <!-- Mensajes de error para Nombre -->
+      <div class="error-messages" *ngIf="registerForm.get('nombre')?.hasError('required') && registerForm.get('nombre')?.dirty">
+        <div>El nombre es obligatorio.</div>
+      </div>
+      <div class="error-messages" *ngIf="registerForm.get('nombre')?.hasError('minlength') && registerForm.get('nombre')?.dirty">
+        <div>El nombre debe tener al menos 3 caracteres.</div>
+      </div>
+
+      <!-- Campo Apellido -->
+      <ion-item lines="none">
+        <ion-input 
+          label="Apellido" 
+          labelPlacement="stacked" 
+          placeholder="Escribe tu apellido" 
+          formControlName="apellido"
+          type="text"
+        ></ion-input>
+      </ion-item>
+      
+      <!-- Mensajes de error para Apellido -->
+      <div class="error-messages" *ngIf="registerForm.get('apellido')?.hasError('required') && registerForm.get('apellido')?.dirty">
+        <div>El apellido es obligatorio.</div>
+      </div>
+      <div class="error-messages" *ngIf="registerForm.get('apellido')?.hasError('minlength') && registerForm.get('apellido')?.dirty">
+        <div>El apellido debe tener al menos 3 caracteres.</div>
+      </div>
+
+      <!-- Campo Email -->
+      <ion-item lines="none">
+        <ion-input 
+          label="Email" 
+          labelPlacement="stacked" 
+          placeholder="Escribe tu email" 
+          formControlName="email"
+          type="email"
+        ></ion-input>
+      </ion-item>
+      
+      <!-- Mensajes de error para Email -->
+      <div class="error-messages" *ngIf="registerForm.get('email')?.hasError('required') && registerForm.get('email')?.dirty">
+        <div>El email es obligatorio.</div>
+      </div>
+      <div class="error-messages" *ngIf="registerForm.get('email')?.hasError('email') && registerForm.get('email')?.dirty">
+        <div>Email inválido.</div>
+      </div>
+
+      <!-- Campo Contraseña -->
+      <ion-item lines="none">
+        <ion-input 
+          label="Contraseña" 
+          labelPlacement="stacked" 
+          placeholder="Escribe tu contraseña" 
+          formControlName="password"
+          type="password"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Mensajes de error para Password -->
+      <div class="error-messages" *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.dirty">
+        <div>La contraseña es obligatoria.</div>
+      </div>
+      <div class="error-messages" *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.dirty">
+        <div>La contraseña debe tener al menos 6 caracteres.</div>
+      </div>
+
+      <!-- Botón de Registro -->
+      <ion-button 
+        expand="block" 
+        (click)="register()" 
+        [disabled]="!registerForm.valid"
+        class="register-button"
+      >
+        Registrarse
+      </ion-button>
+
+      <!-- Link para volver a Login -->
+      <div class="login-link">
+        <p>¿Ya tienes cuenta? <a (click)="goToLogin()">Inicia sesión</a></p>
+      </div>
+
+    </form>
+  </div>
+</ion-content>
