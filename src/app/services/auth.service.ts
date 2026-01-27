@@ -39,4 +39,11 @@ async loginUser(credentials: any): Promise<boolean> {
     return loginStatus === true;
   }
 
+  // Método para cerrar sesión
+async logout(): Promise<void> {
+  await this.storageService.remove('login');
+  await this.storageService.remove('currentUser');
+  console.log(' Sesión cerrada - datos eliminados del storage');
+}
+
 }

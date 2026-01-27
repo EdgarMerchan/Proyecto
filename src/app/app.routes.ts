@@ -10,22 +10,33 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    loadComponent: () => import('./register/register.page').then( m => m.RegisterPage)
+    loadComponent: () => import('./register/register.page').then(m => m.RegisterPage)
   },
   {
     path: 'intro',
     loadComponent: () => import('./intro/intro.page').then(m => m.IntroPage),
-    canActivate: [authGuard] // Necesito estar logueado
+    canActivate: [authGuard]
   },
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-    canActivate: [authGuard, introGuard] // Necesito el login Y haber visto la intro
+    path: 'menu',
+    loadComponent: () => import('./menu/menu.page').then(m => m.MenuPage),
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'home',
+        loadComponent: () => import('./home/home.page').then(m => m.HomePage),
+        canActivate: [introGuard]
+      },
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
-  },
-  
+  }
 ];

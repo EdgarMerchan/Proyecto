@@ -49,9 +49,9 @@ export class IntroPage {
   ) { }
 
   async volverAlHome() {
-    await this.storageService.set('introVista', true);
-    console.log(' Intro vista guardada en storage');
-    this.router.navigate(['/home']);
+  await this.storageService.set('introVista', true);
+  console.log(' Intro vista guardada en storage');
+  this.router.navigate(['/menu/home']);
   }
 
 }
