@@ -1,46 +1,76 @@
-<!-- src/app/home/home.page.html -->
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar [style.--background]="colorActual">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button color="light"></ion-menu-button>
     </ion-buttons>
-    <ion-title>
-      Home
+    <ion-title style="color: white; font-weight: 600;">
+      Mis Álbumes
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="container">
-    <h1>Géneros Musicales</h1>
+  <div class="container" [style.--color-actual]="colorActual">
     
     <!-- Botones de control -->
     <div class="controls">
       <ion-button (click)="cambiarColor()" expand="block">
-        Cambiar Tema
+         Cambiar Tema
       </ion-button>
-      <ion-button (click)="irAIntro()" expand="block" color="secondary">
-        Ver Intro
+      <ion-button (click)="irAIntro()" expand="block">
+         Ver Intro
       </ion-button>
     </div>
 
-    <!-- Swiper Slides -->
+    <!-- Título de sección -->
+    <div class="section-header">
+      <h1>Explora los Álbumes</h1>
+      <p>Haz clic en cualquier álbum para ver sus canciones</p>
+    </div>
+
+    <!-- Swiper con Álbumes -->
     <swiper-container
-      [style.--swiper-theme-color]="colorActual"
-      class="mySwiper"
+      *ngIf="albums && albums.length > 0"
+      [style.--swiper-theme-color]="'#ffffff'"
+      class="albumsSwiper"
+      effect="coverflow"
+      grab-cursor="true"
+      centered-slides="true"
+      slides-per-view="auto"
+      coverflow-effect-rotate="50"
+      coverflow-effect-stretch="0"
+      coverflow-effect-depth="100"
+      coverflow-effect-modifier="1"
+      coverflow-effect-slide-shadows="true"
       pagination="true"
-      pagination-clickable="true"
-      space-between="30"
-      centered-slides="true">
+      pagination-clickable="true">
       
-      <swiper-slide *ngFor="let genre of genres">
-        <div class="slide-content" [style.background]="colorActual">
-          <img [src]="genre.image" [alt]="genre.title" />
-          <h2>{{ genre.title }}</h2>
-          <p>{{ genre.description }}</p>
+      <swiper-slide *ngFor="let album of albums" (click)="showSongsByAlbum(album.id, album.name)">
+        <div class="album-card">
+          <div class="album-image-container">
+            <img [src]="album.image" [alt]="album.name" class="album-image" />
+            <div class="play-overlay">
+              <div class="play-button">▶</div>
+            </div>
+          </div>
+          <div class="album-info">
+            <h2 class="album-name">{{ album.name }}</h2>
+            <p class="album-details">
+              <span class="track-count"> {{ album.total_tracks }} canciones</span>
+              <span class="album-year"> {{ album.release_date | date: 'yyyy' }}</span>
+            </p>
+            <div class="genre-tags">
+              <span class="genre-tag" *ngFor="let genre of album.genres">{{ genre }}</span>
+            </div>
+          </div>
         </div>
       </swiper-slide>
       
     </swiper-container>
+
+    <div *ngIf="!albums || albums.length === 0" class="loading">
+      <div class="spinner"></div>
+      <p>Cargando álbumes...</p>
+    </div>
   </div>
 </ion-content>

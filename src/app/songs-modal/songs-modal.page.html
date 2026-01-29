@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>{{ albumName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="songs-container">
+    <h2>Canciones del Álbum</h2>
+    
+    <ion-list *ngIf="songs && songs.length > 0">
+      <ion-item *ngFor="let song of songs" lines="full">
+        <ion-label>
+          <h3>{{ song.name }}</h3>
+          <p>Track {{ song.track_number }} • {{ (song.duration_ms / 1000 / 60).toFixed(2) }} min</p>
+        </ion-label>
+        <ion-button fill="clear" slot="end" (click)="playSong(song)">
+          <ion-icon name="play-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <div *ngIf="!songs || songs.length === 0" class="no-songs">
+      <p>No hay canciones disponibles para este álbum</p>
+    </div>
+  </div>
+</ion-content>

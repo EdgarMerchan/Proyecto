@@ -1,98 +1,268 @@
-// src/app/home/home.page.scss
-
-:host {
-  --color-claro: #b555f6;
-  --color-oscuro: #57038f;
-}
-
 .container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #7c3aed 0%, #4c1d95 100%);
   padding: 20px;
-  height: 100%;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: var(--ion-color-primary);
+  padding-bottom: 60px;
 }
 
 .controls {
+  margin-bottom: 25px;
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
-  
+
   ion-button {
     flex: 1;
+    font-weight: 600;
+    --border-radius: 25px;
+    height: 50px;
+    font-size: 14px;
+    text-transform: none;
+    
+    &:first-child {
+      --background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+    }
+    
+    &:last-child {
+      --background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
   }
 }
 
-.mySwiper {
+.section-header {
+  text-align: center;
+  margin-bottom: 35px;
+  color: white;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    font-size: 15px;
+    opacity: 0.95;
+    margin: 0;
+    font-weight: 300;
+  }
+}
+
+// Swiper Container
+.albumsSwiper {
   width: 100%;
-  height: 500px;
-  margin-top: 20px;
+  padding-top: 50px;
+  padding-bottom: 80px;
 }
 
 swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-position: center;
+  background-size: cover;
+  width: 320px;
+  height: 480px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    .play-overlay {
+      opacity: 1;
+    }
+  }
 }
 
-.slide-content {
-  text-align: center;
-  padding: 20px;
+// Album Card
+.album-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  overflow: hidden;
+  height: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 50px rgba(124, 58, 237, 0.5);
+  }
+}
+
+.album-image-container {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+
+  .album-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  &:hover .album-image {
+    transform: scale(1.08);
+  }
+}
+
+.play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.8) 0%, rgba(76, 29, 149, 0.8) 100%);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  
-  img {
-    width: 100%;
-    max-width: 400px;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-  
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: white;
-  }
-  
-  p {
-    font-size: 14px;
-    line-height: 1.6;
-    color: white;
-    padding: 0 20px;
-    text-align: justify;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  .play-button {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: #7c3aed;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    animation: pulse 2s infinite;
   }
 }
 
-// Estilos responsive
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.6);
+  }
+}
+
+// Album Info
+.album-info {
+  padding: 22px;
+  background: white;
+
+  .album-name {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: #1f2937;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    letter-spacing: -0.3px;
+  }
+
+  .album-details {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 14px 0;
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  }
+
+  .genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    .genre-tag {
+      background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+    }
+  }
+}
+
+// Loading
+.loading {
+  text-align: center;
+  padding: 80px 20px;
+  color: white;
+
+  .spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-top-color: white;
+    border-radius: 50%;
+    margin: 0 auto 25px;
+    animation: spin 1s linear infinite;
+  }
+
+  p {
+    font-size: 17px;
+    opacity: 0.95;
+    font-weight: 300;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive
 @media (max-width: 768px) {
-  .mySwiper {
+  swiper-slide {
+    width: 300px;
     height: 450px;
   }
-  
-  .slide-content {
-    img {
-      height: 200px;
-    }
-    
-    h2 {
-      font-size: 20px;
-    }
-    
-    p {
-      font-size: 13px;
+
+  .album-image-container {
+    height: 300px;
+  }
+
+  .section-header h1 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+
+  swiper-slide {
+    width: 280px;
+    height: 420px;
+  }
+
+  .album-image-container {
+    height: 280px;
+  }
+
+  .controls {
+    flex-direction: column;
+
+    ion-button {
+      width: 100%;
     }
   }
 }

@@ -38,5 +38,9 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
+  },
+  {
+    path: 'songs-modal',
+    loadComponent: () => import('./songs-modal/songs-modal.page').then( m => m.SongsModalPage)
   }
 ];
