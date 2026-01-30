@@ -1,6 +1,6 @@
 // src/app/home/home.page.ts
 import { Component, OnInit } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonMenuButton, ModalController } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonMenuButton, IonFooter, IonIcon, IonRange, IonLabel, ModalController } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { register } from 'swiper/element/bundle';
@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { StorageService } from '../services/storage.service';
 import { MusicService } from '../services/music.service';
 import { SongsModalPage } from '../songs-modal/songs-modal.page';
+import { addIcons } from 'ionicons';
+import { playOutline, pauseOutline, playSkipForwardOutline, playSkipBackOutline } from 'ionicons/icons';
 
 register();
 
@@ -16,7 +18,20 @@ register();
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonMenuButton],
+  imports: [
+    CommonModule, 
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonContent, 
+    IonButton, 
+    IonButtons, 
+    IonMenuButton,
+    IonFooter,
+    IonIcon,
+    IonRange,
+    IonLabel
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class HomePage implements OnInit {
@@ -25,16 +40,26 @@ export class HomePage implements OnInit {
   colorActual = this.colorOscuro;
   
   albums: any[] = [];
+  
+  // Variables para el reproductor
+  currentSong: any = null;
+  song: any = new Audio();
+  isPlaying: boolean = false;
+  currentTime: number = 0;
+  duration: number = 0;
+  playlist: any[] = [];
+  currentIndex: number = -1;
 
   constructor(
     private router: Router, 
     private storageService: StorageService, 
     private musicService: MusicService,
     private modalCtrl: ModalController
-  ) {}
+  ) {
+    addIcons({ playOutline, pauseOutline, playSkipForwardOutline, playSkipBackOutline });
+  }
 
   async ngOnInit() {
-    // Cargar el tema guardado al iniciar
     const temaGuardado = await this.storageService.get('tema');
     if (temaGuardado) {
       this.colorActual = temaGuardado;
@@ -44,12 +69,11 @@ export class HomePage implements OnInit {
       console.log(' Tema por defecto guardado:', this.colorActual);
     }
 
-    // Verificar si ya vio la intro
     const yaVioIntro = await this.storageService.get('introVista');
     console.log(' ¿Ya vio la intro?', yaVioIntro);
 
-    // Cargar los álbumes
     this.loadAlbums();
+    this.setupAudioListeners();
   }
 
   loadAlbums() {
@@ -59,25 +83,93 @@ export class HomePage implements OnInit {
     });
   }
 
-  // Función para mostrar las canciones de un álbum en el modal
   async showSongsByAlbum(albumId: number, albumName: string) {
     console.log(' Abriendo modal para álbum ID:', albumId);
     
-    // Obtener las canciones del álbum
     const songs = await this.musicService.getSongsByAlbum(albumId);
     console.log(' Canciones obtenidas:', songs);
 
-    // Crear el modal
     const modal = await this.modalCtrl.create({
       component: SongsModalPage,
       componentProps: {
         songs: songs,
-        albumName: albumName
+        albumName: albumName,
+        onSongSelected: (song: any, playlist: any[]) => {
+          this.playSong(song, playlist);
+        }
       }
     });
 
-    // Presentar el modal
     modal.present();
+  }
+
+  // Configurar listeners del audio
+  setupAudioListeners() {
+    this.song.addEventListener('timeupdate', () => {
+      this.currentTime = this.song.currentTime;
+    });
+
+    this.song.addEventListener('loadedmetadata', () => {
+      this.duration = this.song.duration;
+    });
+
+    this.song.addEventListener('ended', () => {
+      this.next();
+    });
+  }
+
+  // Reproducir una canción
+  playSong(song: any, playlist: any[] = []) {
+    console.log(' Reproduciendo:', song);
+    
+    this.currentSong = song;
+    this.playlist = playlist.length > 0 ? playlist : [song];
+    this.currentIndex = this.playlist.findIndex(s => s.id === song.id);
+    
+    this.song.src = song.preview_url;
+    this.song.load();
+    this.song.play();
+    this.isPlaying = true;
+  }
+
+  // Alternar reproduccion/pausa
+  togglePlayPause() {
+    if (this.song.paused) {
+      this.song.play();
+      this.isPlaying = true;
+    } else {
+      this.song.pause();
+      this.isPlaying = false;
+    }
+  }
+
+  // Siguiente canción
+  next() {
+    if (this.currentIndex < this.playlist.length - 1) {
+      const nextSong = this.playlist[this.currentIndex + 1];
+      this.playSong(nextSong, this.playlist);
+    }
+  }
+
+  // Canción anterior
+  previous() {
+    if (this.currentIndex > 0) {
+      const prevSong = this.playlist[this.currentIndex - 1];
+      this.playSong(prevSong, this.playlist);
+    }
+  }
+
+  // Buscar en la canción
+  onSeek(event: any) {
+    this.song.currentTime = event.detail.value;
+  }
+
+  // Formatear tiempo
+  formatTime(seconds: number): string {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
   async cambiarColor() {

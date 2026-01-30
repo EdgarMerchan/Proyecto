@@ -1,4 +1,3 @@
-// src/app/services/music.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -21,10 +20,17 @@ export class MusicService {
     );
   }
 
-  // Nuevo método para obtener las canciones de un álbum específico
   getSongsByAlbum(albumId: number) {
-    return fetch(`${this.urlServer}/albums/${albumId}/tracks`).then(
-      response => response.json()
-    );
+    return fetch(`${this.urlServer}/tracks/album/${albumId}`).then(
+      response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      }
+    ).catch(error => {
+      console.error('Error obteniendo canciones del álbum:', error);
+      return []; // Retornar array vacío en caso de error
+    });
   }
 }

@@ -15,6 +15,7 @@ import { closeOutline, playCircleOutline } from 'ionicons/icons';
 export class SongsModalPage implements OnInit {
   songs: any[] = [];
   albumName: string = '';
+  onSongSelected: ((song: any, playlist: any[]) => void) | undefined;
 
   constructor(private modalCtrl: ModalController) {
     addIcons({ closeOutline, playCircleOutline });
@@ -30,9 +31,13 @@ export class SongsModalPage implements OnInit {
 
   playSong(song: any) {
     console.log('Reproducir canción:', song);
-    // Aquí puedes implementar la reproducción de la canción
-    if (song.preview_url) {
-      window.open(song.preview_url, '_blank');
+    
+    // Llamar a la función del home para reproducir
+    if (this.onSongSelected) {
+      this.onSongSelected(song, this.songs);
     }
+    
+    // Cerrar el modal
+    this.closeModal();
   }
 }

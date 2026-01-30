@@ -49,9 +49,6 @@
         <div class="album-card">
           <div class="album-image-container">
             <img [src]="album.image" [alt]="album.name" class="album-image" />
-            <div class="play-overlay">
-              <div class="play-button">▶</div>
-            </div>
           </div>
           <div class="album-info">
             <h2 class="album-name">{{ album.name }}</h2>
@@ -74,3 +71,43 @@
     </div>
   </div>
 </ion-content>
+
+<!-- Pie de pagina del reproductor de musica -->
+<ion-footer *ngIf="currentSong" class="music-player-footer">
+  <div class="player-container">
+    <!-- Barra de progreso -->
+    <ion-range
+      [min]="0"
+      [max]="duration"
+      [value]="currentTime"
+      (ionChange)="onSeek($event)"
+      class="progress-bar">
+    </ion-range>
+
+    <!-- Player Controls -->
+    <div class="player-controls">
+      <!-- Información de la canción -->
+      <div class="song-info">
+        <ion-label>
+          <h3>{{ currentSong.name }}</h3>
+          <p>{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</p>
+        </ion-label>
+      </div>
+
+      <!-- Botones de control -->
+      <div class="control-buttons">
+        <ion-button fill="clear" (click)="previous()" [disabled]="currentIndex === 0">
+          <ion-icon slot="icon-only" name="play-skip-back-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button fill="clear" (click)="togglePlayPause()" class="play-pause-btn">
+          <ion-icon slot="icon-only" [name]="isPlaying ? 'pause-outline' : 'play-outline'"></ion-icon>
+        </ion-button>
+
+        <ion-button fill="clear" (click)="next()" [disabled]="currentIndex === playlist.length - 1">
+          <ion-icon slot="icon-only" name="play-skip-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-footer>
