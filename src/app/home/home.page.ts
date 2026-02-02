@@ -9,7 +9,7 @@ import { StorageService } from '../services/storage.service';
 import { MusicService } from '../services/music.service';
 import { SongsModalPage } from '../songs-modal/songs-modal.page';
 import { addIcons } from 'ionicons';
-import { playOutline, pauseOutline, playSkipForwardOutline, playSkipBackOutline } from 'ionicons/icons';
+import { playOutline, pauseOutline, playSkipForwardOutline, playSkipBackOutline, heart, heartOutline } from 'ionicons/icons';
 
 register();
 
@@ -49,6 +49,10 @@ export class HomePage implements OnInit {
   duration: number = 0;
   playlist: any[] = [];
   currentIndex: number = -1;
+  
+  // Variables para favoritos
+  userFavorites: any[] = []; // Lista completa de favoritos desde la API
+  userId: number = 1; // ID del usuario actual
 
   constructor(
     private router: Router, 
@@ -56,7 +60,7 @@ export class HomePage implements OnInit {
     private musicService: MusicService,
     private modalCtrl: ModalController
   ) {
-    addIcons({ playOutline, pauseOutline, playSkipForwardOutline, playSkipBackOutline });
+    addIcons({ playOutline, pauseOutline, playSkipForwardOutline, playSkipBackOutline, heart, heartOutline });
   }
 
   async ngOnInit() {
@@ -74,6 +78,7 @@ export class HomePage implements OnInit {
 
     this.loadAlbums();
     this.setupAudioListeners();
+    await this.loadFavorites();
   }
 
   loadAlbums() {
@@ -82,6 +87,77 @@ export class HomePage implements OnInit {
       console.log(' Álbumes cargados:', this.albums);
     });
   }
+
+  // Cargar favoritos desde la API
+  async loadFavorites() {
+    try {
+      this.userFavorites = await this.musicService.getUserFavorites(this.userId);
+      console.log(' Favoritos cargados desde API:', this.userFavorites);
+    } catch (error) {
+      console.error(' Error cargando favoritos:', error);
+      this.userFavorites = [];
+    }
+  }
+
+  // Verificar si la canción actual es favorita
+isFavorite(): boolean {
+  if (!this.currentSong) return false;
+  // Ahora userFavorites tiene objetos con 'track_id' correctamente
+  return this.userFavorites.some(fav => fav.track_id === this.currentSong.id);
+}
+
+// Obtener el ID del favorito para poder eliminarlo
+getFavoriteId(): number | null {
+  if (!this.currentSong) return null;
+  // Buscamos el favorito que coincide con el track_id de la canción actual
+  const favorite = this.userFavorites.find(fav => fav.track_id === this.currentSong.id);
+  return favorite ? favorite.id : null;
+}
+
+  // Agregar o quitar de favoritos
+async toggleFavorite() {
+  if (!this.currentSong) {
+    console.log(' No hay canción reproduciéndose');
+    return;
+  }
+
+  const trackId = this.currentSong.id;
+  console.log(' Canción actual:', this.currentSong.name, '- ID:', trackId);
+  console.log(' Lista de favoritos antes:', this.userFavorites);
+  
+  if (this.isFavorite()) {
+    // Quitar de favoritos
+    const favoriteId = this.getFavoriteId();
+    console.log(' Favorite ID encontrado:', favoriteId);
+    console.log(' Track ID:', trackId);
+    console.log(' User ID:', this.userId);
+    
+    if (favoriteId) {
+      try {
+        const result = await this.musicService.removeFromFavorites(favoriteId, this.userId, trackId);
+        console.log(' Respuesta del servidor al eliminar:', result);
+        console.log(' Quitado de favoritos:', this.currentSong.name);
+        await this.loadFavorites(); // Recargar la lista
+        console.log(' Lista de favoritos después de eliminar:', this.userFavorites);
+      } catch (error) {
+        console.error(' Error quitando de favoritos:', error);
+      }
+    } else {
+      console.error(' No se encontró el ID del favorito');
+    }
+  } else {
+    // Agregar a favoritos
+    try {
+      const result = await this.musicService.addToFavorites(trackId, this.userId);
+      console.log(' Respuesta del servidor al agregar:', result);
+      console.log(' Agregado a favoritos:', this.currentSong.name);
+      await this.loadFavorites(); // Recargar la lista
+      console.log(' Lista de favoritos después de agregar:', this.userFavorites);
+    } catch (error) {
+      console.error(' Error agregando a favoritos:', error);
+    }
+  }
+}
 
   async showSongsByAlbum(albumId: number, albumName: string) {
     console.log(' Abriendo modal para álbum ID:', albumId);
@@ -103,7 +179,6 @@ export class HomePage implements OnInit {
     modal.present();
   }
 
-  // Configurar listeners del audio
   setupAudioListeners() {
     this.song.addEventListener('timeupdate', () => {
       this.currentTime = this.song.currentTime;
@@ -118,9 +193,8 @@ export class HomePage implements OnInit {
     });
   }
 
-  // Reproducir una canción
   playSong(song: any, playlist: any[] = []) {
-    console.log(' Reproduciendo:', song);
+    console.log('▶ Reproduciendo:', song);
     
     this.currentSong = song;
     this.playlist = playlist.length > 0 ? playlist : [song];
@@ -132,7 +206,6 @@ export class HomePage implements OnInit {
     this.isPlaying = true;
   }
 
-  // Alternar reproduccion/pausa
   togglePlayPause() {
     if (this.song.paused) {
       this.song.play();
@@ -143,7 +216,6 @@ export class HomePage implements OnInit {
     }
   }
 
-  // Siguiente canción
   next() {
     if (this.currentIndex < this.playlist.length - 1) {
       const nextSong = this.playlist[this.currentIndex + 1];
@@ -151,7 +223,6 @@ export class HomePage implements OnInit {
     }
   }
 
-  // Canción anterior
   previous() {
     if (this.currentIndex > 0) {
       const prevSong = this.playlist[this.currentIndex - 1];
@@ -159,12 +230,10 @@ export class HomePage implements OnInit {
     }
   }
 
-  // Buscar en la canción
   onSeek(event: any) {
     this.song.currentTime = event.detail.value;
   }
 
-  // Formatear tiempo
   formatTime(seconds: number): string {
     if (!seconds || isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);

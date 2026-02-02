@@ -110,4 +110,13 @@
       </div>
     </div>
   </div>
+
+  <!-- BOTÓN DE FAVORITOS -->
+        <ion-button fill="clear" (click)="toggleFavorite()" class="favorite-btn">
+          <ion-icon 
+            slot="icon-only" 
+            [name]="isFavorite() ? 'heart' : 'heart-outline'"
+            [class.is-favorite]="isFavorite()">
+          </ion-icon>
+        </ion-button>
 </ion-footer>
